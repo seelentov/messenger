@@ -1,0 +1,89 @@
+.messages{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.item{
+  margin: 0 auto;
+  box-shadow: 4px 4px 8px 0px rgba(0, 0, 0, 0.2);
+  border-radius: 25px;
+  background: #343434;
+  width: 90%;
+  button{
+    margin: auto 0;
+    background: #494949;
+    box-shadow: 4px 4px 8px 0px rgba(0, 0, 0, 0.2);
+    height: 70px;
+    width: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border-radius: 25px;
+    transition: all 0.1s ease-in-out;
+    &:active{
+      background: white;
+    }
+    img{
+      width: 30px;
+      height: 30px;
+      
+    }
+  }
+  display: flex;
+  height: 124px;
+  justify-content: start;
+  align-self: center;
+  padding: 20px;
+}
+.itemImg{
+  display: flex;
+  align-items: center;
+  img{
+    height: 100px;
+    object-fit: cover;
+    width: 100px;
+    border-radius: 25px;
+    box-shadow: 4px 4px 8px 0px rgba(0, 0, 0, 0.2);
+  }
+}
+.itemInfo{
+  flex-direction: column;
+  display: flex;
+  justify-content: center;
+  margin-right: auto;
+  margin-left: 10px;
+  p{
+    margin: 5px 0;
+    font-size: 20px;
+  }
+}
+
+.filter{
+  width: 100%;
+  padding: 5px;
+
+  margin: 20px auto;
+  margin-top: -4px;
+}
+
+.itemName{
+  font-weight: 500;
+  line-height: 10px;
+}
+.itemUnread{
+  font-size: 12px !important;
+  color: rgba(255, 255, 255, 0.567);
+  line-height: 10px;
+}
+
+.itemLast{
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width:208px;
+  text-wrap: nowrap;
+  font-size: 17px;
+  line-height: 30px;
+  color: rgba(255, 255, 255, 0.662)
+}
