@@ -19,8 +19,7 @@
 <br/>
 <img src='https://github.com/seelentov/messenger/blob/main/demo/welcome.gif'/><img src='https://github.com/seelentov/messenger/blob/main/demo/edit_profile.gif'/>
 <br/>
-<img src='https://github.com/seelentov/messenger/blob/main/demo/new_msg.gif'/>
-<img src='https://github.com/seelentov/messenger/blob/main/demo/search.gif'/>
+<img src='https://github.com/seelentov/messenger/blob/main/demo/new_msg.gif'/><img src='https://github.com/seelentov/messenger/blob/main/demo/search.gif'/>
 <br/>
 <img src='https://github.com/seelentov/messenger/blob/main/demo/another_profile.gif'/>
 <br/>
