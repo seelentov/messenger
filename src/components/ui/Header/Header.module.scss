@@ -4,6 +4,16 @@
   left: 0;
   z-index: 1;
 }
+
+.newMsg{
+  height: 10px;
+  width: 10px;
+  background: rgb(209, 0, 0);
+  display: block;
+  position: absolute;
+  
+  border-radius: 50%;
+}
 .nav{
   z-index: 1;
   display: flex;

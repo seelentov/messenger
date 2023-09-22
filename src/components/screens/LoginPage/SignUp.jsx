@@ -5,7 +5,6 @@ import { useActions } from '../../../hooks/useActions'
 import { usePostTaskMutation } from '../../../store/api/user.api'
 import { Loading } from '../../ui/Loading/Loading'
 import { setCookieLogin } from './../../../service/cookieLogin'
-import { formatToDDMMYYYY } from './../../../service/formatToDDMMYYYY'
 import styles from './Login.module.scss'
 import { LoginError } from './LoginError'
 
@@ -44,8 +43,7 @@ export const SignUp = () => {
 					email: user.email,
 					name: name,
 					img: '/src/assets/no-img.jpg',
-          birth: birth,
-					messages: [],
+          birth: birth
 				})
 
 				navigate('/')
@@ -101,9 +99,11 @@ export const SignUp = () => {
           required
 				/>
 				<input
-					type='text'
+					type='date'
 					value={birth}
-					onChange={e => setBirth(formatToDDMMYYYY(e.target.value))}
+					onChange={e => {
+            setBirth(e.target.value)
+          console.log(birth)}}
 					placeholder='День рождения (ДД.ММ.ГГГГ)'
 					name='birthday'
 					pattern='\d{2}.\d{2}.\d{4}'

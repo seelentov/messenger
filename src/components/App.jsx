@@ -22,7 +22,7 @@ export const App = () => {
               <Route path='/:id' element={<Account />} />
 							<Route path='/search' element={<Search />} />
 							<Route path='/login' element={<LoginPage />} />
-							<Route path='/messages' element={<Messages />} />
+							<Route path='/' element={<Messages />} />
 							<Route path='*' element={<PageNotFound />} />
 						</Routes>
 					</Wrapper>

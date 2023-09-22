@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useThisStore } from '../../../hooks/useThisStore'
 import { clearCookieLogin } from '../../../service/cookieLogin'
-import { getAge } from '../../../service/getAge'
 import {
 	useEditNameMutation,
 	useGetPostQuery,
@@ -114,16 +113,6 @@ export const Account = () => {
 								<th>День рождения:</th>
 								<td className={styles.birth}>
 									<>{birth}</>
-								</td>
-							</tr>
-							<tr>
-								<th>Возраст:</th>
-								<td>
-									{isNaN(getAge(birth))
-										? ''
-										: getAge(birth) < 1
-										? 'Неверно указанна дата рождения'
-										: getAge(birth)}
 								</td>
 							</tr>
 							<tr>

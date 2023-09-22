@@ -23,7 +23,9 @@ export const IsAuth = ({ children }) => {
 		setLoading(true)
 		//clearCookieLogin() //Очистить id, token в cookie
 		const thisUser = Cookies.get('id')
-		if (!thisUser) return setLoading(false)
+		if (!thisUser) {
+      return setLoading(false)
+    }
 		else {
 			axios
 				.get(`${API_URL}users/${thisUser}`)
@@ -39,7 +41,7 @@ export const IsAuth = ({ children }) => {
 					})
 				})
 				.then(() => setLoading(false))
-				.catch(console.log)
+				.catch(() => setLoading(false))
 		}
 	}, [setUser, navigate])
 

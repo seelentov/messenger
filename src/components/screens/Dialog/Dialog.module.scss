@@ -48,6 +48,10 @@
     width: 44px;
     height: 44px;
     color: #343434;
+    transition: all 0.1s ease-in-out;
+    &:disabled{
+      opacity: 0.5;
+    }
   }
 }
 

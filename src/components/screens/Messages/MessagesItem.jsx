@@ -10,7 +10,7 @@ export const MessagesItem = ({ userId, msgs, unread }) => {
 
 	const lastMsg = msgs.slice(-1)[0]
 	useEffect(() => {
-		setIsLast(lastMsg[1] === userId)
+		setIsLast(lastMsg ? lastMsg[1] === userId : '')
 	}, [lastMsg, userId])
 
 	return (
@@ -32,13 +32,13 @@ export const MessagesItem = ({ userId, msgs, unread }) => {
 					<div className={styles.itemInfo}>
 						<p className={styles.itemName}>{data.name}</p>
 						<p className={styles.itemUnread}>
-							{isLast ? `${unread !== 0 && unread + ' сообщения'}` : <br />}
+							{isLast && unread !== 0 ? `${unread + ' сообщения'}` : <br />}
 						</p>
 						<p
 							className={styles.itemLast}
-							style={{ fontWeight: !isLast ? 200 : 500 }}
+							style={{ fontWeight: unread !== 0 && isLast ? 500 : 200 }}
 						>
-							{lastMsg[2]}
+							{lastMsg ? lastMsg[2] : ''}
 						</p>
 					</div>
 					<Link to={`/dialog/${userId}`}>

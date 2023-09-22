@@ -8,7 +8,9 @@ import { MessagesItem } from './MessagesItem'
 
 export const Messages = () => {
 	const { id } = useThisStore('user')
-	const { isLoading, data } = useGetDialogQuery()
+
+
+const { isLoading, data } = useGetDialogQuery()
 
 	const [messagesData, setMessagesData] = useState('')
   
@@ -28,6 +30,8 @@ export const Messages = () => {
 				messagesData &&
 				messagesData
 					.filter(e => e.users.includes(id))
+          .filter(e => e.messages.length > 0)
+          .sort((a, b) => b.lastUpd - a.lastUpd)
 					.map(e => (
 						<MessagesItem
 							key={e.id}
@@ -36,6 +40,8 @@ export const Messages = () => {
 							unread={e.new}
 						/>
 					))}
+          {messagesData && messagesData
+					.filter(e => e.users.includes(id)).length === 0 && (<p style={{textAlign: 'center'}}>Входящих нет</p>)}
 			<div className={styles.messages}></div>
 		</>
 	)

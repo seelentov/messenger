@@ -1,8 +1,13 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useThisStore } from '../../../hooks/useThisStore'
-import { useGetDialogQuery } from '../../../store/api/messages.api'
+import {
+	useClearNewMutation,
+	useGetDialogQuery,
+	useNewDialogMutation,
+} from '../../../store/api/messages.api'
 import { useGetPostQuery } from '../../../store/api/user.api'
 import { LoadingMin } from '../../ui/Loading/LoadingMin'
 import { formatTime } from './../../../service/formatTime'
@@ -19,17 +24,47 @@ export const Dialog = () => {
 
 	const { id } = useParams()
 	const { isLoading: msgIsLoading, data: msgData } = useGetDialogQuery()
+	const [clearNew] = useClearNewMutation()
 	const { isLoading, data } = useGetPostQuery(id)
+	const [newDialog] = useNewDialogMutation()
+
 	useEffect(() => {
 		if (!isLoading && data) {
 			setCompanion(data)
 			if (!msgIsLoading && msgData) {
-				setDialog(msgData.filter(e => e.users.includes(id, user.id))[0])
+				if (!msgData.filter(e => e.users.includes(id) && e.users.includes(id))[0]) {
+					newDialog({
+						users: [id, user.id],
+						messages: [],
+						new: 0,
+            lastUpd: Date.now(),
+            lastSenler: user.id
+					}).then(() => {
+						setDialog(msgData.filter( e => e.users.includes(id) && e.users.includes(id))[0])
+					})
+				} else {
+					setDialog(msgData.filter(e => e.users.includes(id, user.id))[0])
+
+					let last = dialog && dialog.messages && dialog.messages.length > 0 ? dialog.messages.slice(-1)[0][1] : 0
+
+					dialog?.messages && user.id !== last && clearNew(dialog.id)
+
+				}
 				setLoading(false)
 				window.scrollTo(0, document.body.scrollHeight)
 			}
 		}
-	}, [isLoading, data, msgIsLoading, msgData, user.id, id])
+	}, [
+		isLoading,
+		data,
+		msgIsLoading,
+		msgData,
+		user,
+		id,
+		clearNew,
+		dialog?.messages,
+		newDialog,
+	])
 	return (
 		<>
 			{loading && <LoadingMin />}
@@ -41,7 +76,7 @@ export const Dialog = () => {
 					<p>{companion.name}</p>
 				</div>
 				<div className={styles.messages}>
-					{dialog?.messages &&
+					{dialog?.messages ? (
 						sortByTime(dialog.messages).map((e, key) => (
 							<MessageItem
 								key={key}
@@ -49,13 +84,20 @@ export const Dialog = () => {
 								pos={e[1] !== id}
 								time={e[0]}
 							/>
-						))}
+						))
+					) : (
+						<p>Пока ничего...</p>
+					)}
 				</div>
-				<SendForm
+        {
+          dialog &&
+          dialog.id &&
+          <SendForm
 					dialogID={dialog.id}
 					userID={user.id}
-					msgs={dialog?.messages && sortByTime(dialog.messages)}
+					msgs={dialog && dialog?.messages ? sortByTime(dialog.messages) : null}
 				/>
+        }	
 			</div>
 		</>
 	)

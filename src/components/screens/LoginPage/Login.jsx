@@ -10,8 +10,8 @@ import styles from './Login.module.scss'
 import { LoginError } from './LoginError'
 
 export const Login = () => {
-	const [email, setEmail] = useState('')
-	const [pass, setPass] = useState('')
+	const [email, setEmail] = useState('test1@test.com')
+	const [pass, setPass] = useState('test1@test.com')
 	const [errors, setErrors] = useState([])
 	const [loading, setLoading] = useState(false)
 	const { setUser } = useActions()
