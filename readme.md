@@ -17,7 +17,7 @@
 
  Демонстрация работы приложения:
 <br/>
-<img src='https://github.com/seelentov/messenger/blob/main/demo/welcome.gif'/><img src='https://github.com/seelentov/messenger/blob/main/demo/edit_profile.gif'/>
+<img height="653px" src='https://github.com/seelentov/messenger/blob/main/demo/welcome.gif'/><img height="653px" src='https://github.com/seelentov/messenger/blob/main/demo/edit_profile.gif'/>
 <br/>
 <img src='https://github.com/seelentov/messenger/blob/main/demo/new_msg.gif'/><img src='https://github.com/seelentov/messenger/blob/main/demo/search.gif'/>
 <br/>
