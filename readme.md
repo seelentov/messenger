@@ -12,6 +12,8 @@
 - RTK Query
 - Redix Toolkit
 - js-Cookie
+- react-router-dom
+- eslint
 - json-server
 - Firebase
 
