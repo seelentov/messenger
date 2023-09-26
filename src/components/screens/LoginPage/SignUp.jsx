@@ -2,7 +2,7 @@ import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useActions } from '../../../hooks/useActions'
-import { usePostTaskMutation } from '../../../store/api/user.api'
+import { addToData } from '../../../store/api/firebase/firebase.endpoints'
 import { Loading } from '../../ui/Loading/Loading'
 import { setCookieLogin } from './../../../service/cookieLogin'
 import styles from './Login.module.scss'
@@ -17,14 +17,12 @@ export const SignUp = () => {
 	const [loading, setLoading] = useState(false)
 	const navigate = useNavigate()
 
-	const [newUser] = usePostTaskMutation()
 	const { setUser } = useActions()
 
 	const handleSubmit = e => {
 		e.preventDefault()
-    setErrors([])
 		setLoading(true)
-		
+		setErrors([])
 		const auth = getAuth()
 		createUserWithEmailAndPassword(auth, email, pass)
 			.then(({ user }) => {
@@ -33,25 +31,24 @@ export const SignUp = () => {
 					id: user.uid,
 					token: user.accessToken,
 				})
-				setCookieLogin({
-					id: user.uid,
-					token: user.accessToken,
-				})
-
-				newUser({
+				addToData('users', user.uid, {
 					id: user.uid,
 					email: user.email,
 					name: name,
 					img: '/src/assets/no-img.jpg',
-          birth: birth
+					birth: birth,
 				})
-
-				navigate('/')
+				setCookieLogin({
+					id: user.uid,
+					token: user.accessToken,
+				})
+				navigate(`/account/${user.uid}`)
 			})
 			.then(() => {
 				setLoading(false)
 			})
 			.catch(e => {
+				setLoading(false)
 				if (e.message.includes('password')) {
 					console.log(e)
 					setErrors([['Пароль должен быть более 6-ти символов']])
@@ -66,7 +63,6 @@ export const SignUp = () => {
 					console.log(e)
 					setErrors([['Этот e-mail уже используется другим пользователем']])
 				}
-				setLoading(false)
 			})
 	}
 
@@ -80,7 +76,7 @@ export const SignUp = () => {
 					onChange={e => setEmail(e.target.value)}
 					placeholder='your@email.com'
 					name='email'
-          required
+					required
 				/>
 				<input
 					type='password'
@@ -88,7 +84,7 @@ export const SignUp = () => {
 					onChange={e => setPass(e.target.value)}
 					placeholder='Пароль'
 					name='pass'
-          required
+					required
 				/>
 				<input
 					type='text'
@@ -96,19 +92,20 @@ export const SignUp = () => {
 					onChange={e => setName(e.target.value)}
 					placeholder='Никнейм'
 					name='name'
-          required
+					required
 				/>
 				<input
 					type='date'
 					value={birth}
 					onChange={e => {
-            setBirth(e.target.value)
-          console.log(birth)}}
+						setBirth(e.target.value)
+						console.log(birth)
+					}}
 					placeholder='День рождения (ДД.ММ.ГГГГ)'
 					name='birthday'
 					pattern='\d{2}.\d{2}.\d{4}'
 					min={10}
-          required
+					required
 				/>
 				<input type='submit' value='Зарегистрировать' />
 				<LoginError errors={errors} />

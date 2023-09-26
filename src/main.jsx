@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import './firebase'
 import './index.scss'
 import reportWebVitals from './reportWebVitals'
+import './store/api/firebase/firebase.api'
 
 import { Provider } from 'react-redux'
 import { App } from './components/App'

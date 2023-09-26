@@ -1,3 +1,3 @@
 export const sortByTime = (array) =>{
-  return array.slice().sort((a, b) => a[0] - b[0])
+  return array.slice().sort((a, b) => a.time - b.time)
 }

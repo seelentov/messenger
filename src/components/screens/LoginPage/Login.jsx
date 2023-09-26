@@ -1,11 +1,10 @@
-import axios from 'axios'
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { getData } from '../../../store/api/firebase/firebase.endpoints'
 import { Loading } from '../../ui/Loading/Loading'
 import { useActions } from './../../../hooks/useActions'
 import { setCookieLogin } from './../../../service/cookieLogin'
-import { API_URL } from './../../../store/api/api'
 import styles from './Login.module.scss'
 import { LoginError } from './LoginError'
 
@@ -26,28 +25,21 @@ export const Login = () => {
 		const auth = getAuth()
 		signInWithEmailAndPassword(auth, email, pass)
 			.then(({ user }) => {
-				axios
-					.get(`${API_URL}users/${user.uid}`)
-					.then(r => {
-						console.log('get', r.data)
-						console.log('getname', r.data.name)
-						setUser({
-							email: user.email,
-							id: user.uid,
-							token: user.accessToken,
-							name: r.data.name,
-							img: r.data.img,
-							birth: r.data.birth,
-							messages: r.data.messages,
-						})
-						setCookieLogin({
-							id: user.uid,
-							token: user.accessToken,
-						})
+				getData('users', user.uid, r => {
+					setUser({
+						email: user.email,
+						id: user.uid,
+						token: user.accessToken,
+						name: r.name,
+						img: r.img,
+						birth: r.birth,
+						messages: r.messages,
 					})
-					.catch(() => {
-						setLoading(false)
-					})
+				})
+				setCookieLogin({
+					id: user.uid,
+					token: user.accessToken,
+				})
 				navigate(`/${user.uid}`)
 			})
 			.then(() => {

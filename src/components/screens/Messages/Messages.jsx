@@ -1,47 +1,53 @@
 import { useEffect, useState } from 'react'
-import { useGetDialogQuery } from '../../../store/api/messages.api'
+import { subscribeColl } from '../../../store/api/firebase/firebase.endpoints'
 import { LoadingMin } from '../../ui/Loading/LoadingMin'
 import { useThisStore } from './../../../hooks/useThisStore'
 import { sortByTime } from './../../../service/sortByTime'
 import styles from './Messages.module.scss'
 import { MessagesItem } from './MessagesItem'
-
 export const Messages = () => {
 	const { id } = useThisStore('user')
 
-
-const { isLoading, data } = useGetDialogQuery()
-
 	const [messagesData, setMessagesData] = useState('')
-  
-	const [loading, setLoading] = useState(true)
+
+	const [loading, setLoading] = useState(false)
+	const [newM, setNewM] = useState(false)
 
 	useEffect(() => {
-		if (!isLoading && data) {
-			setMessagesData(data)
+		setLoading(true)
+		const unsub = subscribeColl('messages', doc => {
+			setMessagesData(doc)
 			setLoading(false)
+		})
+		return () => {
+			unsub
 		}
-	}, [data, isLoading])
+	}, [])
 
 	return (
 		<>
 			{loading && <LoadingMin />}
-			{!isLoading &&
+			{!loading &&
 				messagesData &&
 				messagesData
 					.filter(e => e.users.includes(id))
-          .filter(e => e.messages.length > 0)
-          .sort((a, b) => b.lastUpd - a.lastUpd)
-					.map(e => (
-						<MessagesItem
-							key={e.id}
-							userId={e.users[0] === id ? e.users[1] : e.users[0]}
-							msgs={sortByTime(e.messages)}
-							unread={e.new}
-						/>
-					))}
-          {messagesData && messagesData
-					.filter(e => e.users.includes(id)).length === 0 && (<p style={{textAlign: 'center'}}>Входящих нет</p>)}
+					.filter(e => e.messages.length > 0)
+					.sort((a, b) => b.lastUpd - a.lastUpd)
+					.map((e, key) => {
+						return (
+							<MessagesItem
+								key={key}
+								userId={e.users[0] === id ? e.users[1] : e.users[0]}
+								msgs={sortByTime(e.messages)}
+								unread={e.new}
+                lastSenler={e.lastSenler}
+							/>
+						)
+					})}
+			{messagesData &&
+				messagesData.filter(e => e.users.includes(id)).length === 0 && (
+					<p style={{ textAlign: 'center' }}>Входящих нет</p>
+				)}
 			<div className={styles.messages}></div>
 		</>
 	)

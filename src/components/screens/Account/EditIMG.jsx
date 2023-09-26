@@ -1,14 +1,17 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react'
-import { useEditIMGMutation } from '../../../store/api/user.api'
+
+import { updateData } from '../../../store/api/firebase/firebase.endpoints'
 import styles from './Account.module.scss'
 
 export const EditIMG = ({ img, userId, editImage, setEditImage, setImg }) => {
 	const [url, setUrl] = useState(img !== '' ? img : '/src/assets/no-img.jpg')
-	const [editIMG] = useEditIMGMutation()
+
 	const handleSubmit = e => {
 		e.preventDefault()
-		editIMG({ id: userId, img: url }).then(() => {
+		updateData('users', userId, {
+			img: url,
+		}).then(() => {
 			setEditImage(false)
 			setImg(url)
 			setUrl('/src/assets/no-img.jpg')

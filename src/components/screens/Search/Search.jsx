@@ -1,14 +1,26 @@
 import { useState } from 'react'
-import { useGetTaskQuery } from '../../../store/api/user.api'
 import styles from './Search.module.scss'
 import { SearchItem } from './SearchItem'
 import { useThisStore } from '../../../hooks/useThisStore'
 import { LoadingMin } from '../../ui/Loading/LoadingMin'
+import { useEffect } from 'react'
+import { getAllData } from '../../../store/api/firebase/firebase.endpoints'
 
 export const Search = () => {
 	const { name } = useThisStore('user')
-	const { isLoading, data } = useGetTaskQuery()
 	const [filter, setFilter] = useState('')
+	const [loading, setLoading] = useState('')
+	const [data, setData] = useState('')
+
+
+  useEffect(() => {
+		setLoading(true)
+		getAllData('users',  data => {
+			setData(data)
+			setLoading(false)
+		})
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 
 	return (
 		<>
@@ -20,8 +32,8 @@ export const Search = () => {
 				onChange={e => setFilter(e.target.value)}
 			/>
 			<div className={styles.search}>
-				{isLoading && <LoadingMin />}
-				{!isLoading &&
+				{loading && <LoadingMin />}
+				{!loading &&
 					data &&
 					data
 						.filter(user => user.name !== name)

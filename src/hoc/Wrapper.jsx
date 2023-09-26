@@ -6,8 +6,8 @@ export const Wrapper = ({ children }) => {
 			style={{
 				width: '100%',
 				height: '100vh',
-				marginTop: '45px',
-        padding: '40px 0 0 0'
+				marginTop: '64px',
+        paddingTop: '20px'
 			}}
 		>
 			{children}

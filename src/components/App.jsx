@@ -5,30 +5,35 @@ import { LoginPage } from './screens/LoginPage/LoginPage'
 import { Messages } from './screens/Messages/Messages'
 import { PageNotFound } from './screens/PageNotFound/PageNotFound'
 import { Header } from './ui/Header/Header'
-//import { Footer } from './ui/Footer/Footer'
 import { Wrapper } from '../hoc/Wrapper'
 import { Account } from './screens/Account/Account'
 import { Search } from './screens/Search/Search'
 import { Dialog } from './screens/Dialog/Dialog'
+
 export const App = () => {
+
 	return (
 		<>
 			<BrowserRouter>
 				<IsAuth>
-					<Header />
+        <Header />
 					<Wrapper>
 						<Routes>
-              <Route path='/dialog/:id' element={<Dialog />} />
-              <Route path='/:id' element={<Account />} />
-							<Route path='/search' element={<Search />} />
+              <Route path='/search' element={<Search />} />
+              <Route path='/' element={<Messages />} />
 							<Route path='/login' element={<LoginPage />} />
-							<Route path='/' element={<Messages />} />
+              <Route path='/:id' element={<Account />} />
 							<Route path='*' element={<PageNotFound />} />
+              <Route path='/dialog/:id' element={<Dialog />} />
 						</Routes>
 					</Wrapper>
 				</IsAuth>
-				{/*}<Footer />{*/}
 			</BrowserRouter>
 		</>
 	)
 }
+
+
+/*				
+
+*/

@@ -1,23 +1,23 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 import { useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useThisStore } from '../../../hooks/useThisStore'
 import { clearCookieLogin } from '../../../service/cookieLogin'
-import {
-	useEditNameMutation,
-	useGetPostQuery,
-} from '../../../store/api/user.api'
 import { LoadingMin } from '../../ui/Loading/LoadingMin'
 import { useActions } from './../../../hooks/useActions'
 import { copyToClipboard } from './../../../service/copyToCopiboard'
 import styles from './Account.module.scss'
 import { EditIMG } from './EditIMG'
 
+import {
+	subscribeData,
+	updateData,
+} from '../../../store/api/firebase/firebase.endpoints'
+
 export const Account = () => {
 	const { id } = useParams()
 	const thisUser = useThisStore('user')
-
-	const { isLoading, data } = useGetPostQuery(id)
 
 	const [userId, setUserId] = useState('')
 	const [name, setName] = useState('')
@@ -32,17 +32,23 @@ export const Account = () => {
 
 	const nameRef = useRef()
 	useEffect(() => {
-		if (!isLoading && data) {
-			setName(data.name)
-			setImg(data.img)
-			setUserId(data.id)
-			setBirth(data.birth)
-			setEmail(data.email)
+		setLoading(true)
+
+		const unsub = subscribeData('users', id, doc => {
+			setName(doc.name)
+			setImg(doc.img)
+			setUserId(doc.id)
+			setBirth(doc.birth)
+			setEmail(doc.email)
 			setLoading(false)
-		}
+		})
 
 		nameEdit && nameRef.current.focus()
-	}, [nameEdit, data, isLoading])
+
+		return () => {
+			unsub
+		}
+	}, [id])
 
 	const { logout } = useActions()
 	const logOut = () => {
@@ -50,10 +56,11 @@ export const Account = () => {
 		logout()
 	}
 
-	const [editName] = useEditNameMutation()
-
 	const onBlurName = () => {
-		editName({ id: data.id, name: name }).then(setNameEdit(!nameEdit))
+		updateData('users', userId, {
+			name: name,
+		})
+		setNameEdit(false)
 	}
 
 	return (
@@ -103,7 +110,7 @@ export const Account = () => {
 								<th>ID:</th>
 								<td
 									className={styles.id}
-									onClick={() => copyToClipboard(data.id)}
+									onClick={() => copyToClipboard(userId)}
 								>
 									{userId.slice(0, 12) + '...'}
 									<p>Нажмите, что бы скопировать</p>

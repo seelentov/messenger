@@ -1,17 +1,15 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react/prop-types */
+import Cookies from 'js-cookie'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Welcome } from '../components/screens/Welcome/Welcome'
-//import { useActions } from '../hooks/useActions'
-import axios from 'axios'
-import Cookies from 'js-cookie'
 import { LoginPage } from '../components/screens/LoginPage/LoginPage'
+import { Welcome } from '../components/screens/Welcome/Welcome'
 import { Loading } from '../components/ui/Loading/Loading'
 import { useAuth } from '../hooks/useAuth'
 import { notNewUser, useNew } from '../service/cookieNewUser'
+import { getData } from '../store/api/firebase/firebase.endpoints'
 import { useActions } from './../hooks/useActions'
-import { API_URL } from './../store/api/api'
 //import { clearCookieLogin } from '../service/cookieLogin'
 
 export const IsAuth = ({ children }) => {
@@ -24,24 +22,19 @@ export const IsAuth = ({ children }) => {
 		//clearCookieLogin() //Очистить id, token в cookie
 		const thisUser = Cookies.get('id')
 		if (!thisUser) {
-      return setLoading(false)
-    }
-		else {
-			axios
-				.get(`${API_URL}users/${thisUser}`)
-				.then(r => {
-					setUser({
-						email: r.data.email,
-						id: thisUser,
-						token: Cookies.get('token'),
-						name: r.data.name,
-						img: r.data.img,
-						birth: r.data.birth,
-						messages: r.data.messages,
-					})
+			return setLoading(false)
+		} else {
+			getData('users', thisUser, r => {
+				setUser({
+					email: r.email,
+					id: thisUser,
+					token: Cookies.get('token'),
+					name: r.name,
+					img: r.img,
+					birth: r.birth,
+					messages: r.messages,
 				})
-				.then(() => setLoading(false))
-				.catch(() => setLoading(false))
+			}).then(() => setLoading(false))
 		}
 	}, [setUser, navigate])
 
