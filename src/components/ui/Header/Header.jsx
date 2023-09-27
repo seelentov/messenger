@@ -1,38 +1,37 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useThisStore } from '../../../hooks/useThisStore'
-import styles from './Header.module.scss'
 import useSound from 'use-sound'
-import { subscribeColl } from '../../../store/api/firebase/firebase.endpoints'
 import blopSound from '../../../assets/blop.mp3'
-
+import { useThisStore } from '../../../hooks/useThisStore'
+import { subscribeColl } from '../../../store/api/firebase/firebase.endpoints'
+import styles from './Header.module.scss'
 export const Header = () => {
 	const [state, setState] = useState(null)
 	const [messages, setMessages] = useState(null)
 
 	const { id } = useThisStore('user')
-  const [play] = useSound(blopSound)
+	const [play] = useSound(blopSound, { volume: 0.25 })
 
 	useEffect(() => {
 		const unsub = subscribeColl('messages', doc => {
 			setMessages(doc)
-      if(doc
-        .filter(e => e.users.includes(id))
-        .filter(e => e.new > 0)
-        .filter(e => e.lastSenler !== id).length > 0){
-          play()
-        }
+			if (
+				doc
+					.filter(e => e.users.includes(id))
+					.filter(e => e.new > 0)
+					.filter(e => e.lastSenler !== id).length > 0
+			) {
+				play()
+			}
 		})
-   
+
 		return () => {
 			unsub
-		} 
+		}
 	}, [id])
 
 	const notification = messages => {
-    
-    
 		return (
 			messages
 				.filter(e => e.users.includes(id))

@@ -5,6 +5,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useThisStore } from '../../../hooks/useThisStore'
 
 import {
+	addToData,
 	getAllData,
 	getData,
 	subscribeData,
@@ -27,53 +28,71 @@ export const Dialog = () => {
 	const { id } = useParams()
 	const bottomRef = useRef()
 
-	
-	useEffect(() => {
-		setLoading(true)
+  useEffect(() => {
+    setLoading(true)
+  
+    const fetchData = async () => {
+      await getData('users', id, r => {
+        setCompanion(r)
+      })
+      let thisDialog
+      await getAllData('messages', (data)=>{
+        thisDialog = data.filter(
+          e => e.users.includes(id) && e.users.includes(user.id)
+        )[0];
+      });
+  
 
-		getData('users', id, r => {
-			setCompanion(r)
-		})
-
-		getAllData('messages', data => {
-			const thisDialog = data.filter(
-				e => e.users.includes(id) && e.users.includes(id)
-			)[0]
-      
-			if (user.id !== thisDialog.lastSenler) {
-        updateData('messages', thisDialog.id, {
+      if(!thisDialog){
+        await addToData('messages', `${user.id}${id}`, {
+          id: `${user.id}${id}`,
+          messages: [],
+          new: 0,
+          lastUpd: Date.now(),
+          lastSenler: user.id,
+          users:[
+            user.id, id
+          ],
+        })
+      }
+  
+      if (thisDialog && user.id !== thisDialog.lastSenler) {
+        await updateData('messages', thisDialog.id, {
           new: 0,
         })
       }
-      
-			const unsub = subscribeData('messages', thisDialog.id, r => {
-				setDialog(r)
-        setTimeout(()=>{
-          {bottomRef.current?.scrollIntoView({ scroll: 'smooth', block: 'end' })}
-        },100)
-        
-			}).then(()=>{
+  
+      const unsub = await subscribeData('messages', thisDialog?.id, r => {
+        setDialog(r)
+        setTimeout(() => {
+          bottomRef.current?.scrollIntoView({
+            scroll: 'smooth',
+            block: 'end',
+          })
+        }, 100)
+      }).then(() => {
         setLoading(false)
       })
-      
-			return unsub
-		})
-	}, [id])
+  
+      return unsub
+    }
+  
+    fetchData();
+  }, [id])
 
 	return (
 		<>
-    
 			{loading && <LoadingMin />}
 			<div className={styles.dialog}>
-        {companion && 
-        <div className={styles.user}>
-        <Link to={`/${id}`}>
-          <img src={companion.img} />
-        </Link>
-        <p>{companion.name}</p>
-      </div>
-        }
-				
+				{companion && (
+					<div className={styles.user}>
+						<Link to={`/${id}`}>
+							<img src={companion.img} />
+						</Link>
+						<p>{companion.name}</p>
+					</div>
+				)}
+
 				<div className={styles.messages} ref={bottomRef}>
 					{dialog?.messages ? (
 						sortByTime(dialog.messages).map((e, key) => (
@@ -87,7 +106,6 @@ export const Dialog = () => {
 					) : (
 						<p>Пока ничего...</p>
 					)}
-          
 				</div>
 				{dialog && (
 					<SendForm

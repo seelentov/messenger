@@ -42,7 +42,7 @@ export const SignUp = () => {
 					id: user.uid,
 					token: user.accessToken,
 				})
-				navigate(`/account/${user.uid}`)
+				navigate(`/${user.uid}`)
 			})
 			.then(() => {
 				setLoading(false)

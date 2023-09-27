@@ -11,7 +11,7 @@ import { Search } from './screens/Search/Search'
 import { Dialog } from './screens/Dialog/Dialog'
 
 export const App = () => {
-
+  
 	return (
 		<>
 			<BrowserRouter>
