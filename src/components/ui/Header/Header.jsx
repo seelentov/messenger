@@ -5,14 +5,15 @@ import { useThisStore } from '../../../hooks/useThisStore'
 import styles from './Header.module.scss'
 import useSound from 'use-sound'
 import { subscribeColl } from '../../../store/api/firebase/firebase.endpoints'
-import blopSolud from '../../../assets/blop.mp3'
+import blopSound from '../../../assets/blop.mp3'
 
 export const Header = () => {
 	const [state, setState] = useState(null)
 	const [messages, setMessages] = useState(null)
 
 	const { id } = useThisStore('user')
-  const [play] = useSound(blopSolud)
+  const [play] = useSound(blopSound)
+
 	useEffect(() => {
 		const unsub = subscribeColl('messages', doc => {
 			setMessages(doc)
@@ -26,8 +27,8 @@ export const Header = () => {
    
 		return () => {
 			unsub
-		}
-	}, [])
+		} 
+	}, [id])
 
 	const notification = messages => {
     
