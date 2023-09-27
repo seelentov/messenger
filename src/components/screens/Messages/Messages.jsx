@@ -11,7 +11,6 @@ export const Messages = () => {
 	const [messagesData, setMessagesData] = useState('')
 
 	const [loading, setLoading] = useState(false)
-	const [newM, setNewM] = useState(false)
 
 	useEffect(() => {
 		setLoading(true)

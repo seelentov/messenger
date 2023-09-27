@@ -37,7 +37,7 @@ export const MessagesItem = ({ userId, msgs, unread, lastSenler }) => {
 					<div className={styles.itemInfo}>
 						<p className={styles.itemName}>{companion?.name}</p>
 						<p className={styles.itemUnread}>
-							{unread && unread !== 0 ? lastSenler === userId + ' сообщения' : <br />}
+							{unread !== 0 && lastSenler === userId ? unread + ' new messages' : <br />}
 						</p>
 						<p
 							className={styles.itemLast}

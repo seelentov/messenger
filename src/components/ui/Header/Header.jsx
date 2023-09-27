@@ -3,25 +3,35 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useThisStore } from '../../../hooks/useThisStore'
 import styles from './Header.module.scss'
-
+import useSound from 'use-sound'
 import { subscribeColl } from '../../../store/api/firebase/firebase.endpoints'
+import blopSolud from '../../../assets/blop.mp3'
 
 export const Header = () => {
 	const [state, setState] = useState(null)
 	const [messages, setMessages] = useState(null)
 
 	const { id } = useThisStore('user')
-
+  const [play] = useSound(blopSolud)
 	useEffect(() => {
 		const unsub = subscribeColl('messages', doc => {
 			setMessages(doc)
+      if(doc
+        .filter(e => e.users.includes(id))
+        .filter(e => e.new > 0)
+        .filter(e => e.lastSenler !== id).length > 0){
+          play()
+        }
 		})
+   
 		return () => {
 			unsub
 		}
 	}, [])
 
 	const notification = messages => {
+    
+    
 		return (
 			messages
 				.filter(e => e.users.includes(id))

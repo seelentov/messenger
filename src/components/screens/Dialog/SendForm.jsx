@@ -3,13 +3,19 @@ import { useState } from 'react'
 import { updateData } from '../../../store/api/firebase/firebase.endpoints'
 import styles from './Dialog.module.scss'
 
-export const SendForm = ({ dialogID, userID, msgs }) => {
+export const SendForm = ({ dialogID, userID, msgs, news, lastSenler }) => {
 	const [input, setInput] = useState('')
 
 	const handleSubmit = e => {
 		e.preventDefault()
 		if (input === '') return
     
+    if (userID !== lastSenler) {
+      updateData('messages', dialogID, {
+        new: 0,
+      })
+    }
+
 		updateData('messages', dialogID, {
 			messages: [
 				...msgs,
@@ -19,6 +25,9 @@ export const SendForm = ({ dialogID, userID, msgs }) => {
 					time: Date.now(),
 				},
 			],
+      new: Number(news) + 1,
+      lastSenler: userID,
+      lastUpd: Date.now()
 		})
     setInput('')
 	}
