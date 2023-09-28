@@ -1,44 +1,44 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react'
-
 import { updateData } from '../../../store/api/firebase/firebase.endpoints'
 import styles from './Account.module.scss'
 
-export const EditIMG = ({ img, userId, editImage, setEditImage, setImg }) => {
-	const [url, setUrl] = useState(img !== '' ? img : '/src/assets/no-img.jpg')
+export const EditIMG = ({ userId }) => {
+	const [input, setInput] = useState('/src/assets/no-img.jpg')
 
+	const [edit, setEdit] = useState(false)
 	const handleSubmit = e => {
 		e.preventDefault()
 		updateData('users', userId, {
-			img: url,
+			img: input,
 		}).then(() => {
-			setEditImage(false)
-			setImg(url)
-			setUrl('/src/assets/no-img.jpg')
+			setEdit(false)
 		})
 	}
 	return (
 		<>
-			{editImage && (
+			<img
+				className={styles.editImage}
+				src='/src/assets/edit.svg'
+				onClick={() => setEdit(true)}
+			/>
+			{edit && (
 				<div className={styles.editImageBg}>
-					<div
-						className={styles.shadow}
-						onClick={() => setEditImage(false)}
-					></div>
+					<div className={styles.shadow} onClick={() => setEdit(false)}></div>
 					<form
 						onSubmit={e => handleSubmit(e)}
 						className={styles.editImageModal}
 					>
-						<p onClick={() => setEditImage(false)} className={styles.close}>
+						<p onClick={() => setEdit(false)} className={styles.close}>
 							Закрыть
 						</p>
 						<div className={styles.inputs}>
 							<input
 								placeholder='https://example.com/example-img'
 								type='text'
-								value={url}
+								value={input}
 								onChange={e =>
-									setUrl(
+									setInput(
 										e.target.value !== ''
 											? e.target.value
 											: '/src/assets/no-img.jpg'

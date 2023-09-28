@@ -28,57 +28,54 @@ export const Dialog = () => {
 	const { id } = useParams()
 	const bottomRef = useRef()
 
-  useEffect(() => {
-    setLoading(true)
-  
-    const fetchData = async () => {
-      await getData('users', id, r => {
-        setCompanion(r)
-      })
-      let thisDialog
-      await getAllData('messages', (data)=>{
-        thisDialog = data.filter(
-          e => e.users.includes(id) && e.users.includes(user.id)
-        )[0];
-      });
-  
+	useEffect(() => {
+		setLoading(true)
 
-      if(!thisDialog){
-        await addToData('messages', `${user.id}${id}`, {
-          id: `${user.id}${id}`,
-          messages: [],
-          new: 0,
-          lastUpd: Date.now(),
-          lastSenler: user.id,
-          users:[
-            user.id, id
-          ],
-        })
-      }
-  
-      if (thisDialog && user.id !== thisDialog.lastSenler) {
-        await updateData('messages', thisDialog.id, {
-          new: 0,
-        })
-      }
-  
-      const unsub = await subscribeData('messages', thisDialog?.id, r => {
-        setDialog(r)
-        setTimeout(() => {
-          bottomRef.current?.scrollIntoView({
-            scroll: 'smooth',
-            block: 'end',
-          })
-        }, 100)
-      }).then(() => {
-        setLoading(false)
-      })
-  
-      return unsub
-    }
-  
-    fetchData();
-  }, [id])
+		const fetchData = async () => {
+			await getData('users', id, r => {
+				setCompanion(r)
+			})
+			let thisDialog
+			await getAllData('messages', data => {
+				thisDialog = data.filter(
+					e => e.users.includes(id) && e.users.includes(user.id)
+				)[0]
+			})
+
+			if (!thisDialog) {
+				await addToData('messages', `${user.id}${id}`, {
+					id: `${user.id}${id}`,
+					messages: [],
+					new: 0,
+					lastUpd: Date.now(),
+					lastSenler: user.id,
+					users: [user.id, id],
+				})
+			}
+
+			if (thisDialog && user.id !== thisDialog.lastSenler) {
+				await updateData('messages', thisDialog.id, {
+					new: 0,
+				})
+			}
+
+			const unsub = await subscribeData('messages', thisDialog?.id, r => {
+				setDialog(r)
+				setTimeout(() => {
+					bottomRef.current?.scrollIntoView({
+						scroll: 'smooth',
+						block: 'end',
+					})
+				}, 100)
+			}).then(() => {
+				setLoading(false)
+			})
+
+			return unsub
+		}
+
+		fetchData()
+	}, [id])
 
 	return (
 		<>
@@ -94,7 +91,7 @@ export const Dialog = () => {
 				)}
 
 				<div className={styles.messages} ref={bottomRef}>
-					{dialog?.messages ? (
+					{dialog?.messages &&
 						sortByTime(dialog.messages).map((e, key) => (
 							<MessageItem
 								key={key}
@@ -102,10 +99,7 @@ export const Dialog = () => {
 								pos={e.user !== id}
 								time={e.time}
 							/>
-						))
-					) : (
-						<p>Пока ничего...</p>
-					)}
+						))}
 				</div>
 				{dialog && (
 					<SendForm

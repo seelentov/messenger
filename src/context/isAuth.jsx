@@ -36,7 +36,8 @@ export const IsAuth = ({ children }) => {
 				})
 			}).then(() => setLoading(false))
 		}
-	}, [setUser, navigate])
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 
 	const [state, setState] = useState('open')
 
@@ -53,9 +54,8 @@ export const IsAuth = ({ children }) => {
 
 	return (
 		<>
-			{loading && <Loading />}
-
-			{useAuth() ? (
+      {loading && <Loading/>}
+			{ useAuth() ? (
 				children
 			) : useNew() ? (
 				<LoginPage />
